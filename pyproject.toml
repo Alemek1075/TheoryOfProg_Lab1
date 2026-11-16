@@ -12,3 +12,6 @@ dependencies = ["lark"]
 
 [project.optional-dependencies]
 dev = ["pytest"]
+
+[tool.setuptools.package-data]
+sipl = ["grammar/*.lark"]
