@@ -112,9 +112,8 @@ def _syntax_error(e: UnexpectedInput, text: str) -> SiplSyntaxError:
         message = f"unexpected '{e.token}', expected {expected}"
         return SiplSyntaxError(message, _span(e.token))
     if isinstance(e, UnexpectedCharacters):
-        span = SourceSpan(
-            e.line, e.column, e.line, e.column + 1, e.pos_in_stream, e.pos_in_stream + 1
-        )
+        pos = e.pos_in_stream or 0
+        span = SourceSpan(e.line, e.column, e.line, e.column + 1, pos, pos + 1)
         return SiplSyntaxError(f"unexpected character '{e.char}'", span)
     return SiplSyntaxError("syntax error", _end_span(text))
 

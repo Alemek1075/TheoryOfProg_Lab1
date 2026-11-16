@@ -65,7 +65,14 @@ def test_check_syntax_error_json(cli):
         "error": {
             "kind": "syntax_error",
             "message": "unexpected '=', expected ':='",
-            "span": {"line": 2, "column": 5, "end_line": 2, "end_column": 6, "start": 10, "end": 11},
+            "span": {
+                "line": 2,
+                "column": 5,
+                "end_line": 2,
+                "end_column": 6,
+                "start": 10,
+                "end": 11,
+            },
         },
     }
 
@@ -99,15 +106,31 @@ def test_parse_json(cli, program):
             "type": "Program",
             "body": {
                 "type": "Skip",
-                "span": {"line": 1, "column": 7, "end_line": 1, "end_column": 11, "start": 6, "end": 10},
+                "span": {
+                    "line": 1,
+                    "column": 7,
+                    "end_line": 1,
+                    "end_column": 11,
+                    "start": 6,
+                    "end": 10,
+                },
             },
-            "span": {"line": 1, "column": 1, "end_line": 1, "end_column": 15, "start": 0, "end": 14},
+            "span": {
+                "line": 1,
+                "column": 1,
+                "end_line": 1,
+                "end_column": 15,
+                "start": 0,
+                "end": 14,
+            },
         },
     }
 
 
 def test_parse_json_has_all_node_types(cli, program):
-    text = "begin if not X = 1 or X > 2 then begin X := X * 2; skip end else while X > 0 do X := 0 end"
+    text = (
+        "begin if not X = 1 or X > 2 then begin X := X * 2; skip end else while X > 0 do X := 0 end"
+    )
     code, out, err = cli("parse", program(text), "--json")
     types = set()
 
@@ -331,7 +354,7 @@ def test_exit_codes_of_the_process():
 
 
 def test_stdin():
-    result = run_process("run", "-", "X=5", stdin="begin R := X * 2 end".encode("utf-8"))
+    result = run_process("run", "-", "X=5", stdin=b"begin R := X * 2 end")
     assert result.returncode == 0
     assert result.stdout.split() == [b"R", b"=", b"10", b"X", b"=", b"5"]
 

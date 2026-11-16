@@ -11,6 +11,7 @@ from .interpreter import (
     DEFAULT_STEP_LIMIT,
     BeforeStatement,
     ConditionChecked,
+    Event,
     Finished,
     Interpreter,
     SiplRuntimeError,
@@ -143,7 +144,7 @@ def _run(args, text, program) -> int:
 
 
 def _trace(args, text, program) -> int:
-    events = []
+    events: list[Event] = []
     interpreter = Interpreter(program, dict(args.state), args.step_limit)
     interpreter.subscribe(events.append)
     error = None
@@ -198,8 +199,9 @@ def _sorted(state: dict[str, int]) -> dict[str, int]:
 
 
 def _tree_lines(node: ast.Node, depth: int = 0):
-    values, children = [], []
-    for name, value in ast.fields_of(node):
+    values: list[object] = []
+    children: list[ast.Node] = []
+    for _, value in ast.fields_of(node):
         (children if isinstance(value, ast.Node) else values).append(value)
     yield "  " * depth + " ".join([type(node).__name__, *map(str, values)])
     for child in children:

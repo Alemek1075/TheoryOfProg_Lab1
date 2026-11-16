@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from .. import ast
 from .errors import SiplRuntimeError, StepLimitError, UndefinedVariableError
@@ -63,8 +63,9 @@ class Interpreter:
     @property
     def next_statement(self) -> ast.Stmt | None:
         """The statement that the next step will run, None when nothing is left."""
-        if self.done:
-            return None
+        return None if self.done else self._peek()
+
+    def _peek(self) -> ast.Stmt:
         item = self._todo[-1]
         if isinstance(item, _Recheck):
             return item.stmt
@@ -84,12 +85,12 @@ class Interpreter:
             # nothing is removed from the todo list here, so the run can go on
             # if the caller raises step_limit
             message = f"step limit of {self.step_limit} exceeded"
-            error = StepLimitError(message, self.next_statement.span)
+            error = StepLimitError(message, self._peek().span)
             self._emit(Failed(self.steps + 1, error))
             raise error
 
         self.steps += 1
-        current = self.next_statement
+        current = self._peek()
         try:
             self._run_next()
         except RecursionError:
@@ -182,9 +183,9 @@ class Interpreter:
             left = self._test(cond.left)
             right = self._test(cond.right)
             return left or right
-        left = self._eval(cond.left)
-        right = self._eval(cond.right)
-        return left == right if cond.op == "=" else left > right
+        a = self._eval(cond.left)
+        b = self._eval(cond.right)
+        return a == b if cond.op == "=" else a > b
 
 
 def run(

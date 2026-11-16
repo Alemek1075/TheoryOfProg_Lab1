@@ -27,6 +27,9 @@ def _span(span) -> dict | None:
 class Event:
     step: int  # number of the step during which the event happened, from 1
 
+    def to_dict(self) -> dict:
+        raise NotImplementedError
+
 
 @dataclass(frozen=True)
 class BeforeStatement(Event):

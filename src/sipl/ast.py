@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field, fields
-from typing import Union
 
 
 @dataclass(frozen=True)
@@ -112,6 +111,6 @@ def to_dict(node: Node) -> dict:
     return out
 
 
-Expr = Union[Num, Var, BinOp]
-Cond = Union[Compare, Or, Not]
-Stmt = Union[Assign, Seq, If, While, Block, Skip]
+Expr = Num | Var | BinOp
+Cond = Compare | Or | Not
+Stmt = Assign | Seq | If | While | Block | Skip
