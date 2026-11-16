@@ -1,5 +1,7 @@
 # SIPL
 
+![CI](https://github.com/Alemek1075/TheoryOfProg_Lab1/actions/workflows/ci.yml/badge.svg)
+
 Курсовий проєкт з теорії програмування. Інтерпретатор SIPL і дебагер до нього.
 
 Завдання:
