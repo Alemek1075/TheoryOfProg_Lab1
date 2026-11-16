@@ -1,0 +1,45 @@
+// Граматика SIPL за БНФ з практикуму.
+// БНФ курсу неоднозначна, тому пріоритети задані тут:
+// * сильніше за + і -, not сильніше за or,
+// тіло if/while це один оператор (кілька беруться в begin ... end).
+
+program: "begin" statement "end"
+
+?statement: statement ";" simple    -> seq
+          | simple
+
+?simple: VAR ":=" expr                               -> assign
+       | "if" cond "then" simple "else" simple       -> if_
+       | "while" cond "do" simple                    -> while_
+       | "begin" statement "end"                     -> block
+       | "skip"                                      -> skip
+
+?expr: expr "+" term    -> add
+     | expr "-" term    -> sub
+     | expr "–" term    -> sub
+     | term
+
+?term: term "*" factor  -> mul
+     | factor
+
+?factor: NUMBER         -> num
+       | "-" NUMBER     -> neg_num
+       | "–" NUMBER     -> neg_num
+       | VAR            -> var
+       | "(" expr ")"
+
+?cond: cond "or" neg    -> or_
+     | cond "∨" neg     -> or_
+     | neg
+
+?neg: "not" neg         -> not_
+    | "¬" neg           -> not_
+    | "(" cond ")"
+    | expr "=" expr     -> eq
+    | expr ">" expr     -> gt
+
+VAR: /[A-Za-z][A-Za-z0-9_]*/
+NUMBER: /[0-9]+/
+
+%import common.WS
+%ignore WS
