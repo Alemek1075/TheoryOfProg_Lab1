@@ -14,3 +14,20 @@
 - REL-03 PyPI (0.5)
 
 Всього 10 балів.
+
+Як запустити (потрібен Python 3.10 або новіший):
+
+    pip install -e ".[dev]"
+    sipl run examples/valid/power.sipl X=2 Y=10
+    pytest
+
+Команди:
+
+    sipl check файл.sipl            перевірити синтаксис
+    sipl parse файл.sipl            показати AST
+    sipl run файл.sipl X=2 Y=3      виконати, X і Y це початкові значення
+    sipl trace файл.sipl X=2 Y=3    виконати і показати кожен крок
+
+До кожної можна дописати --json. Формат JSON і коди завершення є в docs/cli.md.
+
+Приклади програм лежать в examples: valid це правильні, invalid це з помилками.
