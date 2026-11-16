@@ -94,7 +94,8 @@ class Finished(Event):
     state: dict[str, int]
 
     def to_dict(self) -> dict:
-        return {"event": "finished", "step": self.step, "state": dict(self.state)}
+        state = dict(sorted(self.state.items()))
+        return {"event": "finished", "step": self.step, "state": state}
 
 
 @dataclass(frozen=True)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from typing import Union
 
 
@@ -96,6 +96,20 @@ class Skip(Node):
 @dataclass(frozen=True)
 class Program(Node):
     body: Stmt
+
+
+def fields_of(node: Node):
+    """Pairs (name, value) for all fields of a node except span."""
+    return [(f.name, getattr(node, f.name)) for f in fields(node) if f.name != "span"]
+
+
+def to_dict(node: Node) -> dict:
+    """The tree as plain dicts, ready for JSON."""
+    out: dict = {"type": type(node).__name__}
+    for name, value in fields_of(node):
+        out[name] = to_dict(value) if isinstance(value, Node) else value
+    out["span"] = asdict(node.span) if node.span else None
+    return out
 
 
 Expr = Union[Num, Var, BinOp]
