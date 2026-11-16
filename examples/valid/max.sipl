@@ -1,0 +1,3 @@
+begin
+  if X > Y then R := X else R := Y
+end
