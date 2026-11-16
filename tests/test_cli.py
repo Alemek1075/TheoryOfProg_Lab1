@@ -56,8 +56,10 @@ def test_check_syntax_error(cli):
     ]
 
 
-def test_check_syntax_error_json(cli):
-    code, out, err = cli("check", EQUALS, "--json")
+def test_check_syntax_error_json(cli, program):
+    # own file, not the one from examples: git on Windows checks files out with \r\n
+    # and the offsets in span would be different there
+    code, out, err = cli("check", program("begin\n  R = 1\nend\n"), "--json")
     assert code == 1
     assert err == ""
     assert json.loads(out) == {
