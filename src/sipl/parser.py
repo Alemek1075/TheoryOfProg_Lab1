@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from lark import Lark, Transformer, v_args
+from lark import Lark, v_args
 from lark.exceptions import UnexpectedCharacters, UnexpectedInput, UnexpectedToken
+from lark.visitors import Transformer_NonRecursive
 
 from . import ast
 from .ast import SourceSpan
@@ -48,7 +49,7 @@ def _span(pos) -> SourceSpan:
 
 
 @v_args(meta=True)
-class _Builder(Transformer):
+class _Builder(Transformer_NonRecursive):
     def program(self, meta, c):
         return ast.Program(c[0], span=_span(meta))
 
