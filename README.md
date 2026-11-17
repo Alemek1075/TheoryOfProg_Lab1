@@ -2,9 +2,11 @@
 
 ![CI](https://github.com/Alemek1075/TheoryOfProg_Lab1/actions/workflows/ci.yml/badge.svg)
 
-Курсовий проєкт з теорії програмування. Інтерпретатор SIPL і дебагер до нього.
+Курсовий проєкт з теорії програмування, Базилевич Олексій, ТТП-32.
 
-Завдання:
+Тут інтерпретатор мови SIPL з лекцій і дебагер до нього, на Python.
+
+Що взяв:
 - CORE-01 граматика (0.5)
 - CORE-02 парсер і AST (1.5)
 - CORE-03 інтерпретатор (2.0)
@@ -15,21 +17,7 @@
 - REL-02 релізи (0.5)
 - REL-03 PyPI (0.5)
 
-Всього 10 балів.
+Разом 10 балів.
 
-Як запустити (потрібен Python 3.10 або новіший):
-
-    pip install -e ".[dev]"
-    sipl run examples/valid/power.sipl X=2 Y=10
-    pytest
-
-Команди:
-
-    sipl check файл.sipl            перевірити синтаксис
-    sipl parse файл.sipl            показати AST
-    sipl run файл.sipl X=2 Y=3      виконати, X і Y це початкові значення
-    sipl trace файл.sipl X=2 Y=3    виконати і показати кожен крок
-
-До кожної можна дописати --json. Формат JSON і коди завершення є в docs/cli.md.
-
-Приклади програм лежать в examples: valid це правильні, invalid це з помилками.
+Граматика в src/sipl/grammar/sipl.lark, приклади програм в examples, опис CLI в docs/cli.md.
+Запуск: `pip install -e .`, потім `sipl run examples/valid/power.sipl X=2 Y=10`.
