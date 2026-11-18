@@ -166,6 +166,13 @@ def test_launch_errors(tmp_path):
     assert [r["success"] for r in launches] == [False, False, False]
     assert "1:12" in launches[2]["message"]
     assert len(events(messages, "terminated")) == 1
+    assert events(messages, "initialized") == []
+
+
+def test_initialized_comes_after_launch(tmp_path):
+    messages = start(tmp_path, state={"X": 1, "Y": 1}).run()
+    order = [m.get("command") or m.get("event") for m in messages]
+    assert order.index("initialized") == order.index("launch") + 1
 
 
 def test_bad_state(tmp_path):

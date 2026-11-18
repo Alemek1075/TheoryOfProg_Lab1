@@ -127,7 +127,6 @@ class DebugServer:
                 "supportsTerminateRequest": True,
             },
         )
-        self._event("initialized")
 
     def _on_launch(self, request, args):
         path = args.get("program")
@@ -156,6 +155,9 @@ class DebugServer:
         self.interpreter = Interpreter(self.program, state, limit)
         self.stop_on_entry = bool(args.get("stopOnEntry", False))
         self._respond(request)
+        # VS Code sends breakpoints after this event. It goes here and not after
+        # initialize, so the program is already parsed when the breakpoints come.
+        self._event("initialized")
 
     def _on_setBreakpoints(self, request, args):
         lines = statement_lines(self.program) if self.program else []
