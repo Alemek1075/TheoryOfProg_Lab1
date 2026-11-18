@@ -104,6 +104,12 @@ class Interpreter:
         if self.done:
             self._emit(Finished(self.steps, dict(self.state)))
 
+    def evaluate(self, node: ast.Expr | ast.Cond) -> int | bool:
+        """Value of an expression or a condition in the current state. Emits no events."""
+        if isinstance(node, (ast.Compare, ast.Or, ast.Not)):
+            return self._test(node)
+        return self._eval(node)
+
     def _fail(self, error: SiplRuntimeError) -> None:
         self.error = error
         self._todo.clear()

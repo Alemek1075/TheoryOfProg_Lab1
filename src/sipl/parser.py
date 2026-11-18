@@ -21,6 +21,15 @@ _lark = Lark(
     propagate_positions=True,
 )
 
+# the same grammar, but starting from an expression or a condition (debugger evaluate)
+_lark_expression = Lark(
+    GRAMMAR_PATH.read_text(encoding="utf-8"),
+    start=["expr", "cond"],
+    parser="lalr",
+    lexer="basic",
+    propagate_positions=True,
+)
+
 _TERMINALS = {t.name: t.pattern.value for t in _lark.terminals}
 _NAMES = {"VAR": "variable", "NUMBER": "number", "$END": "end of program"}
 _UNICODE_FORMS = {"–", "∨", "¬"}
@@ -39,6 +48,17 @@ def parse(text: str) -> ast.Program:
     except UnexpectedInput as e:
         raise _syntax_error(e, text) from None
     return _Builder().transform(tree)
+
+
+def parse_expression(text: str) -> ast.Expr | ast.Cond:
+    """Parse an expression like "X + 1" or a condition like "X > 1"."""
+    for start in ("expr", "cond"):
+        try:
+            tree = _lark_expression.parse(text, start=start)
+        except UnexpectedInput:
+            continue
+        return _Builder().transform(tree)
+    raise SiplSyntaxError("not an expression or a condition", _end_span(text))
 
 
 def _span(pos) -> SourceSpan:
