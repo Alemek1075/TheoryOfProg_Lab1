@@ -1,0 +1,104 @@
+{
+  "name": "sipl-debug",
+  "displayName": "SIPL Debug",
+  "description": "Підсвітка і дебагер для мови SIPL",
+  "version": "0.2.0",
+  "publisher": "alemek1075",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Alemek1075/TheoryOfProg_Lab1"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Debuggers", "Programming Languages"],
+  "main": "./extension.js",
+  "activationEvents": ["onDebugResolve:sipl"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "sipl",
+        "aliases": ["SIPL"],
+        "extensions": [".sipl"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sipl",
+        "scopeName": "source.sipl",
+        "path": "./syntaxes/sipl.tmLanguage.json"
+      }
+    ],
+    "breakpoints": [{ "language": "sipl" }],
+    "debuggers": [
+      {
+        "type": "sipl",
+        "label": "SIPL",
+        "languages": ["sipl"],
+        "configurationAttributes": {
+          "launch": {
+            "required": ["program"],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "Файл програми SIPL",
+                "default": "${file}"
+              },
+              "state": {
+                "type": "object",
+                "description": "Початковий стан, наприклад {\"X\": 2, \"Y\": 10}",
+                "additionalProperties": { "type": "integer" },
+                "default": {}
+              },
+              "stopOnEntry": {
+                "type": "boolean",
+                "description": "Зупинитись перед першим оператором",
+                "default": true
+              },
+              "stepLimit": {
+                "type": "integer",
+                "description": "Максимум кроків, потім програма зупиняється з помилкою",
+                "default": 100000
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "sipl",
+            "request": "launch",
+            "name": "Debug SIPL",
+            "program": "${file}",
+            "state": {},
+            "stopOnEntry": true
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "SIPL: Launch",
+            "body": {
+              "type": "sipl",
+              "request": "launch",
+              "name": "Debug SIPL",
+              "program": "^\"\\${file}\"",
+              "state": {},
+              "stopOnEntry": true
+            }
+          }
+        ]
+      }
+    ],
+    "configuration": {
+      "title": "SIPL",
+      "properties": {
+        "sipl.python": {
+          "type": "string",
+          "default": "python",
+          "description": "Python, в якому встановлено пакет sipl-interpreter"
+        }
+      }
+    }
+  }
+}

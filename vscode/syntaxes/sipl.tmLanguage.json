@@ -1,0 +1,12 @@
+{
+  "scopeName": "source.sipl",
+  "name": "SIPL",
+  "patterns": [
+    { "name": "keyword.control.sipl", "match": "\\b(begin|end|if|then|else|while|do|skip)\\b" },
+    { "name": "keyword.operator.logical.sipl", "match": "\\b(not|or)\\b|∨|¬" },
+    { "name": "keyword.operator.assignment.sipl", "match": ":=" },
+    { "name": "keyword.operator.sipl", "match": "[-+*=>–]" },
+    { "name": "constant.numeric.sipl", "match": "\\b[0-9]+\\b" },
+    { "name": "variable.other.sipl", "match": "\\b[A-Za-z][A-Za-z0-9_]*\\b" }
+  ]
+}

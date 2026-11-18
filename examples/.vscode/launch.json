@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "sipl",
+      "request": "launch",
+      "name": "Debug current file",
+      "program": "${file}",
+      "state": { "X": 2, "Y": 10 },
+      "stopOnEntry": true
+    },
+    {
+      "type": "sipl",
+      "request": "launch",
+      "name": "Debug power.sipl",
+      "program": "${workspaceFolder}/valid/power.sipl",
+      "state": { "X": 2, "Y": 10 },
+      "stopOnEntry": false
+    }
+  ]
+}
