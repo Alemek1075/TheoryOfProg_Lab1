@@ -19,5 +19,8 @@
 
 Разом 10 балів.
 
-Граматика в src/sipl/grammar/sipl.lark, приклади програм в examples, опис CLI в docs/cli.md.
-Запуск: `pip install -e .`, потім `sipl run examples/valid/power.sipl X=2 Y=10`.
+Граматика в src/sipl/grammar/sipl.lark, приклади програм в examples, опис CLI в docs/cli.md, зміни по версіях в CHANGELOG.md.
+
+Запуск: `pip install sipl-interpreter` (або `pip install -e .` з репозиторію), потім `sipl run examples/valid/power.sipl X=2 Y=10`.
+
+Дебагер: відкрити репозиторій у VS Code, F5 (конфіг "Run SIPL extension"). Відкриється друге вікно з папкою examples, там відкрити будь-який .sipl, поставити точку зупину і ще раз F5. Можна і без цього, поставивши .vsix з релізу.
