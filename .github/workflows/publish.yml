@@ -1,71 +1,46 @@
 name: Release
 
-# A tag vX.Y.Z makes a GitHub release with notes from CHANGELOG.md and the build files,
-# then publishes the package to PyPI. workflow_dispatch does the same for a tag that
-# was pushed before this workflow existed.
+# Runs when a release vX.Y.Z is published on GitHub: attaches the build files,
+# fills empty release notes from CHANGELOG.md and publishes the package to PyPI.
 on:
-  push:
-    tags: ["v*"]
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "Tag, for example v0.1.0"
-        required: true
-      pypi:
-        description: "Also publish to PyPI"
-        type: boolean
-        default: false
-
-env:
-  TAG: ${{ inputs.tag || github.ref_name }}
+  release:
+    types: [published]
 
 jobs:
-  release:
+  files:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TAG: ${{ github.event.release.tag_name }}
     steps:
-      # main for CHANGELOG.md, the tag for what is built
       - uses: actions/checkout@v6
-        with:
-          ref: main
-          path: main
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ env.TAG }}
-          path: tag
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
       - name: Check that tag matches version
-        working-directory: tag
         run: |
           version=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
           test "v$version" = "$TAG"
       - run: pip install build && python -m build
-        working-directory: tag
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-      - name: Package VS Code extension
-        working-directory: tag
+      - run: npx --yes @vscode/vsce@3 package -o ../dist/
+        working-directory: vscode
+      - run: gh release upload "$TAG" dist/* --clobber
+      - name: Notes from CHANGELOG.md
+        if: github.event.release.body == ''
         run: |
-          if [ -d vscode ]; then
-            cd vscode && npx --yes @vscode/vsce@3 package -o ../dist/
-          fi
-      - name: Release notes
-        run: |
-          # section of CHANGELOG.md from "## 0.2.0" to the next "## "
-          awk -v v="${TAG#v}" '$0 ~ "^## "v" " {on=1; next} /^## / {on=0} on' main/CHANGELOG.md > notes.md
+          # section from "## X.Y.Z" to the next "## "
+          awk -v v="${TAG#v}" '$0 ~ "^## "v" " {on=1; next} /^## / {on=0} on' CHANGELOG.md > notes.md
           test -s notes.md
-      - run: gh release create "$TAG" tag/dist/* --title "$TAG" --notes-file notes.md --verify-tag
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
+          gh release edit "$TAG" --notes-file notes.md
 
   pypi:
-    needs: release
-    if: github.event_name == 'push' || inputs.pypi
+    needs: files
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
@@ -73,8 +48,6 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v6
-        with:
-          ref: ${{ env.TAG }}
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
